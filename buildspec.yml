@@ -1,0 +1,23 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo Installing dependencies
+      - aws --version
+
+  pre_build:
+    commands:
+      - echo Logging into ECR
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 662080331226.dkr.ecr.us-east-1.amazonaws.com
+
+  build:
+    commands:
+      - echo Build started
+      - docker build -t brain-tasks .
+      - docker tag brain-tasks:latest 662080331226.dkr.ecr.us-east-1.amazonaws.com/brain-tasks:latest
+
+  post_build:
+    commands:
+      - echo Pushing image
+      - docker push 662080331226.dkr.ecr.us-east-1.amazonaws.com/brain-tasks:latest
